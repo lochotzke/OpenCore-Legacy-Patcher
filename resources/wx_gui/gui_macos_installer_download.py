@@ -134,17 +134,17 @@ class macOSInstallerDownloadFrame(wx.Frame):
         ]
 
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in icons]
-        
+
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(460, 500))
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
-        
+
         # macOS Installers list
         id = wx.NewIdRef()
-        
+
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
         self.list.SetSmallImages(bundles)
 
@@ -152,8 +152,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list.InsertColumn(1, "Size")
         self.list.InsertColumn(2, "Release Date")
 
-        installers = self.available_installers_latest if show_full is False else self.available_installers
-        if show_full is False:
+        installers = (
+            self.available_installers_latest
+            if not show_full
+            else self.available_installers
+        )
+        if not show_full:
             self.frame_modal.SetSize((460, 370))
 
         if installers:
@@ -169,21 +173,21 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     self.list.SetItemImage(index, int(installers[item]['Build'][:2])-19) # Darwin version to index conversion. i.e. Darwin 20 -> 1 -> BigSur.icns
                 self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
                 self.list.SetItem(index, 2, installers[item]['Date'].strftime("%x"))
-                
 
-                
+
+
         else:
             logging.error("No installers found on SUCatalog")
             wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
         self.list.SetColumnWidth(0, 280)
         self.list.SetColumnWidth(1, 65)
-        if show_full is True:
+        if show_full:
             self.list.SetColumnWidth(2, 80)
         else:
             self.list.SetColumnWidth(2, 94) # Hack to get the highlight to fill the ListCtrl
 
-        if show_full is False:
+        if not show_full:
             self.list.Select(-1)
 
         self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
@@ -194,12 +198,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
         self.select_button.SetToolTip("Download the selected macOS Installer.")
         self.select_button.SetDefault()
-        if show_full is True:
+        if show_full:
             self.select_button.Disable()
 
         self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
         self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
-        if show_full is True:
+        if show_full:
             self.copy_button.Disable()
         self.copy_button.SetToolTip("Copy the download link of the selected macOS Installer.")
         self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_link(installers))
@@ -209,7 +213,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
 
         self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
-        if show_full is True:
+        if show_full:
             self.showolderversions_checkbox.SetValue(True)
         self.showolderversions_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self._display_available_installers(event, self.showolderversions_checkbox.GetValue()))
 
@@ -220,7 +224,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         checkboxsizer = wx.BoxSizer(wx.HORIZONTAL)
         checkboxsizer.Add(self.showolderversions_checkbox, 0, wx.ALIGN_CENTRE | wx.RIGHT, 5)
-        
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
         sizer.Add(title_label, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
@@ -395,14 +399,18 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         progress_bar_animation.stop_pulse()
         progress_bar.Hide()
-        chunk_label.SetLabel("Successfully extracted macOS installer" if self.result is True else "Failed to extract macOS installer")
+        chunk_label.SetLabel(
+            "Successfully extracted macOS installer"
+            if self.result
+            else "Failed to extract macOS installer"
+        )
         chunk_label.Centre(wx.HORIZONTAL)
 
         # Create macOS Installer button
         create_installer_button = wx.Button(self, label="Create macOS Installer", pos=(-1, progress_bar.GetPosition()[1]), size=(170, 30))
         create_installer_button.Bind(wx.EVT_BUTTON, self.on_existing)
         create_installer_button.Centre(wx.HORIZONTAL)
-        if self.result is False:
+        if not self.result:
             create_installer_button.Disable()
 
         # Return to main menu button
@@ -416,7 +424,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Show frame
         self.Show()
 
-        if self.result is False:
+        if not self.result:
             wx.MessageBox("An error occurred while extracting the macOS installer. Could be due to a corrupted installer", "Error", wx.OK | wx.ICON_ERROR)
             return
 

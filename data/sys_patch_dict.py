@@ -83,11 +83,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": self.non_metal_os_support[0],
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": self.non_metal_os_support[-1],
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -95,17 +95,21 @@ class SystemPatchDictionary():
                             "IOSurface.kext": "10.15.7",
                         },
                         "/System/Library/Frameworks": {
-                            "OpenGL.framework":       "10.14.3",
+                            "OpenGL.framework": "10.14.3",
                             "CoreDisplay.framework": f"10.14.4-{self.os_major}",
-                            "IOSurface.framework":   f"10.15.7-{self.os_major}",
-                            "QuartzCore.framework":  f"10.15.7-{self.os_major}",
+                            "IOSurface.framework": f"10.15.7-{self.os_major}",
+                            "QuartzCore.framework": f"10.15.7-{self.os_major}",
                         },
                         "/System/Library/PrivateFrameworks": {
                             "GPUSupport.framework": "10.14.3",
-                            "SkyLight.framework":  f"10.14.6-{self.os_major}",
+                            "SkyLight.framework": f"10.14.6-{self.os_major}",
                         },
                         "/System/Applications": {
-                            **({ "Photo Booth.app": "11.7.9"} if self.os_major >= os_data.os_data.monterey else {}),
+                            **(
+                                {"Photo Booth.app": "11.7.9"}
+                                if self.os_major >= os_data.os_data.monterey
+                                else {}
+                            ),
                         },
                     },
                     "Remove": {
@@ -138,14 +142,26 @@ class SystemPatchDictionary():
                         ],
                     },
                     "Install Non-Root": {
-                        "/Library/Application Support/SkyLightPlugins": {
-                            **({ "DropboxHack.dylib":    "SkyLightPlugins" } if self.os_major >= os_data.os_data.monterey else {}),
-                            **({ "DropboxHack.txt":      "SkyLightPlugins" } if self.os_major >= os_data.os_data.monterey else {}),
-                        },
+                        "/Library/Application Support/SkyLightPlugins": (
+                            {"DropboxHack.dylib": "SkyLightPlugins"}
+                            if self.os_major >= os_data.os_data.monterey
+                            else {}
+                        )
+                        | (
+                            {"DropboxHack.txt": "SkyLightPlugins"}
+                            if self.os_major >= os_data.os_data.monterey
+                            else {}
+                        )
                     },
                     "Processes": {
                         # 'When Space Allows' option introduced in 12.4 (XNU 21.5)
-                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
+                        **(
+                            {
+                                "defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True
+                            }
+                            if self.os_float >= self.macOS_12_4
+                            else {}
+                        ),
                         "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                     },
@@ -157,24 +173,24 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": self.non_metal_os_support[0],
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": self.non_metal_os_support[-1],
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "IOAcceleratorFamily2.kext":     "10.13.6",
-                            "IOSurface.kext":                "10.14.6",
+                            "IOAcceleratorFamily2.kext": "10.13.6",
+                            "IOSurface.kext": "10.14.6",
                         },
                         "/System/Library/Frameworks": {
                             "IOSurface.framework": f"10.14.6-{self.os_major}",
-                            "OpenCL.framework":     "10.13.6",
+                            "OpenCL.framework": "10.13.6",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "GPUSupport.framework":     "10.13.6",
+                            "GPUSupport.framework": "10.13.6",
                             "IOAccelerator.framework": f"10.13.6-{self.os_major}",
                         },
                     },
@@ -184,18 +200,17 @@ class SystemPatchDictionary():
                         ],
                     },
                 },
-
                 "Non-Metal CoreDisplay Common": {
                     # Nvidia Web Drivers require an older build of CoreDisplay
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": self.non_metal_os_support[0],
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": self.non_metal_os_support[-1],
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -204,31 +219,28 @@ class SystemPatchDictionary():
                         },
                     },
                 },
-
                 "Non-Metal Enforcement": {
                     # Forces Metal kexts from High Sierra to run in the fallback non-Metal mode
                     # Verified functional with HD4000 and Iris Plus 655
                     # Only used for internal development purposes, not suitable for end users
-
                     # Note: Metal kexts in High Sierra rely on IOAccelerator, thus 'Non-Metal IOAccelerator Common'
                     # is needed for proper linking
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": self.non_metal_os_support[0],
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": self.non_metal_os_support[-1],
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Processes": {
                         "defaults write /Library/Preferences/com.apple.CoreDisplay useMetal -boolean no": True,
-                        "defaults write /Library/Preferences/com.apple.CoreDisplay useIOP -boolean no":   True,
+                        "defaults write /Library/Preferences/com.apple.CoreDisplay useIOP -boolean no": True,
                     },
                 },
-
                 "Revert Non-Metal ColorSync Workaround": {
                     # Old patch for ColorSync in Ventura on HD3000s
                     # Proper solution has been integrated into QuartzCore
@@ -236,11 +248,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Remove": {
@@ -250,45 +262,35 @@ class SystemPatchDictionary():
                         ],
                     },
                 },
-
-                # AMD GCN and Nvidia Kepler require Metal Downgrade in Ventura
-                # The patches are required due to struct issues in the Metal stack
-                # - AMD GCN will break on BronzeMtlDevice
-                # - See Nvidia Kepler patchset for more info
                 "Metal Common": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework":                   "12.5",
+                            "Metal.framework": "12.5",
                             "MetalPerformanceShaders.framework": "12.5",
                         },
                     },
                 },
-
-                # Temporary work-around for Kepler GPUs on Ventura
-                # We removed the reliance on Metal.framework downgrade, however the new Kepler
-                # patchset breaks with the old Metal. Thus we need to ensure stock variant is used
-                # Remove this when OCLP is merged onto mainline
                 "Revert Metal Downgrade": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Remove": {
@@ -301,46 +303,37 @@ class SystemPatchDictionary():
                         ],
                     },
                 },
-
-                # Monterey has a WebKit sandboxing issue where many UI elements fail to render
-                # This patch simple replaces the sandbox profile with one supporting our GPUs
-                # Note: Neither Big Sur nor Ventura have this issue
                 "WebKit Monterey Common": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
-                        "/System/Library/Frameworks": {
-                            "WebKit.framework":  "11.6"
-                        },
+                        "/System/Library/Frameworks": {"WebKit.framework": "11.6"},
                     },
                     "Install Non-Root": {
                         "/Library/Apple/System/Library/StagedFrameworks/Safari": {
-                            "WebKit.framework":  "11.6"
+                            "WebKit.framework": "11.6"
                         },
                     },
                 },
-
-                # Intel Ivy Bridge, Haswell and Nvidia Kepler are Metal 3802-based GPUs
-                # Due to this, we need to re-add 3802 compiler support to the Metal stack
                 "Metal 3802 Common": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -353,22 +346,19 @@ class SystemPatchDictionary():
                         },
                         "/System/Library/Sandbox/Profiles": {
                             "com.apple.mtlcompilerservice.sb": "12.5-3802",
-                        }
+                        },
                     },
                 },
-
-                # Support for 3802 GPUs were broken with 13.3+
-                # Downgrades 31001 stack to 13.2.1, however nukes AMFI support
                 "Metal 3802 Common Extended": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 4 # 13.3
+                            "OS Minor": 4,  # 13.3
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -381,18 +371,16 @@ class SystemPatchDictionary():
                         },
                     },
                 },
-
-                # Primarily for AMD GCN GPUs
                 "Revert GVA Downgrade": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Remove": {
@@ -404,81 +392,73 @@ class SystemPatchDictionary():
                         ],
                     },
                 },
-
-                # For GPUs last natively supported in Catalina/Big Sur
-                # Restores DRM support
                 "Catalina GVA": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/PrivateFrameworks": {
-                            "AppleGVA.framework":     "10.15.7",
+                            "AppleGVA.framework": "10.15.7",
                             "AppleGVACore.framework": "10.15.7",
                         },
                     },
                 },
-
-                # For GPUs last natively supported in Monterey
-                # Restores DRM support
                 "Monterey GVA": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/PrivateFrameworks": {
-                            "AppleGVA.framework":     "12.5",
+                            "AppleGVA.framework": "12.5",
                             "AppleGVACore.framework": "12.5",
                         },
                     },
                 },
-
                 "High Sierra GVA": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": self.non_metal_os_support[0],
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/PrivateFrameworks": {
-                            "AppleGVA.framework":     "10.13.6",
+                            "AppleGVA.framework": "10.13.6",
                             "AppleGVACore.framework": "10.15.7",
                         },
                     },
                 },
-
                 "Big Sur OpenCL": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -487,17 +467,16 @@ class SystemPatchDictionary():
                         },
                     },
                 },
-
                 "Monterey OpenCL": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -506,18 +485,16 @@ class SystemPatchDictionary():
                         },
                     },
                 },
-
-                # In Ventura, Apple added AVX2.0 code to AMD's OpenCL/GL compilers
                 "AMD OpenCL": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -527,29 +504,32 @@ class SystemPatchDictionary():
                         },
                     },
                 },
-
                 "Nvidia Tesla": {
                     "Display Name": "Graphics: Nvidia Tesla",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "GeForceGA.bundle":            "10.13.6",
-                            "GeForceTesla.kext":           "10.13.6",
+                            "GeForceGA.bundle": "10.13.6",
+                            "GeForceTesla.kext": "10.13.6",
                             "GeForceTeslaGLDriver.bundle": "10.13.6",
                             "GeForceTeslaVADriver.bundle": "10.13.6",
-                            "NVDANV50HalTesla.kext":       "10.13.6",
-                            "NVDAResmanTesla.kext":        "10.13.6",
+                            "NVDANV50HalTesla.kext": "10.13.6",
+                            "NVDAResmanTesla.kext": "10.13.6",
                             # Apple dropped NVDAStartup in 12.0 Beta 7 (XNU 21.1)
-                            **({ "NVDAStartup.kext":       "12.0 Beta 6" } if self.os_float >= self.macOS_12_0_B7 else {})
+                            **(
+                                {"NVDAStartup.kext": "12.0 Beta 6"}
+                                if self.os_float >= self.macOS_12_0_B7
+                                else {}
+                            ),
                         },
                     },
                 },
@@ -559,28 +539,37 @@ class SystemPatchDictionary():
                         "Minimum OS Support": {
                             # 12.0 beta 7 (XNU 21.1)
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 1
+                            "OS Minor": 1,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "GeForce.kext":            "12.0 Beta 6",
-                            "NVDAGF100Hal.kext":       "12.0 Beta 6",
-                            "NVDAGK100Hal.kext":       "12.0 Beta 6",
-                            "NVDAResman.kext":         "12.0 Beta 6",
-                            "NVDAStartup.kext":        "12.0 Beta 6",
+                            "GeForce.kext": "12.0 Beta 6",
+                            "NVDAGF100Hal.kext": "12.0 Beta 6",
+                            "NVDAGK100Hal.kext": "12.0 Beta 6",
+                            "NVDAResman.kext": "12.0 Beta 6",
+                            "NVDAStartup.kext": "12.0 Beta 6",
                             "GeForceAIRPlugin.bundle": "11.0 Beta 3",
-                            "GeForceGLDriver.bundle":  "11.0 Beta 3",
-                            "GeForceMTLDriver.bundle": "11.0 Beta 3" if self.os_major <= os_data.os_data.monterey else f"11.0 Beta 3-{self.os_major}",
-                            "GeForceVADriver.bundle":  "12.0 Beta 6",
+                            "GeForceGLDriver.bundle": "11.0 Beta 3",
+                            "GeForceMTLDriver.bundle": "11.0 Beta 3"
+                            if self.os_major <= os_data.os_data.monterey
+                            else f"11.0 Beta 3-{self.os_major}",
+                            "GeForceVADriver.bundle": "12.0 Beta 6",
                         },
                         "/System/Library/Frameworks": {
                             # XNU 21.6 (macOS 12.5)
-                            **({ "Metal.framework": "12.5 Beta 2"} if (self.os_float >= self.macOS_12_5 and self.os_major < os_data.os_data.ventura) else {}),
+                            **(
+                                {"Metal.framework": "12.5 Beta 2"}
+                                if (
+                                    self.os_float >= self.macOS_12_5
+                                    and self.os_major < os_data.os_data.ventura
+                                )
+                                else {}
+                            ),
                         },
                         "/System/Library/PrivateFrameworks": {
                             "GPUCompiler.framework": "11.6",
@@ -592,46 +581,47 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "GeForceAIRPluginWeb.bundle":     "WebDriver-387.10.10.10.40.140",
-                            "GeForceGLDriverWeb.bundle":      "WebDriver-387.10.10.10.40.140",
-                            "GeForceMTLDriverWeb.bundle":     "WebDriver-387.10.10.10.40.140",
-                            "GeForceVADriverWeb.bundle":      "WebDriver-387.10.10.10.40.140",
-
+                            "GeForceAIRPluginWeb.bundle": "WebDriver-387.10.10.10.40.140",
+                            "GeForceGLDriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
+                            "GeForceMTLDriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
+                            "GeForceVADriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                             # Tesla-only files
-                            "GeForceTeslaGAWeb.bundle":       "WebDriver-387.10.10.10.40.140",
+                            "GeForceTeslaGAWeb.bundle": "WebDriver-387.10.10.10.40.140",
                             "GeForceTeslaGLDriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                             "GeForceTeslaVADriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                         },
                         "/System/Library/PrivateFrameworks": {
                             # Restore OpenCL by adding missing compiler files
-                            **({ "GPUCompiler.framework": "11.6"} if self.os_major >= os_data.os_data.monterey else {}),
+                            **(
+                                {"GPUCompiler.framework": "11.6"}
+                                if self.os_major >= os_data.os_data.monterey
+                                else {}
+                            ),
                         },
                     },
                     "Install Non-Root": {
                         "/Library/Extensions": {
-                            "GeForceWeb.kext":                "WebDriver-387.10.10.10.40.140",
-                            "NVDAGF100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
-                            "NVDAGK100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
-                            "NVDAGM100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
-                            "NVDAGP100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
-                            "NVDAResmanWeb.kext":             "WebDriver-387.10.10.10.40.140",
-                            "NVDAStartupWeb.kext":            "WebDriver-387.10.10.10.40.140",
-
+                            "GeForceWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAGF100HalWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAGK100HalWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAGM100HalWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAGP100HalWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAResmanWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAStartupWeb.kext": "WebDriver-387.10.10.10.40.140",
                             # Tesla-only files
-                            "GeForceTeslaWeb.kext":           "WebDriver-387.10.10.10.40.140",
-                            "NVDANV50HalTeslaWeb.kext":       "WebDriver-387.10.10.10.40.140",
-                            "NVDAResmanTeslaWeb.kext":        "WebDriver-387.10.10.10.40.140",
+                            "GeForceTeslaWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDANV50HalTeslaWeb.kext": "WebDriver-387.10.10.10.40.140",
+                            "NVDAResmanTeslaWeb.kext": "WebDriver-387.10.10.10.40.140",
                         },
-
                         # Disabled due to issues with Pref pane stripping 'nvda_drv' NVRAM
                         # variables
                         # "/Library/PreferencePanes": {
@@ -657,20 +647,20 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDFramebuffer.kext":           "10.13.6",
-                            "AMDLegacyFramebuffer.kext":     "10.13.6",
-                            "AMDLegacySupport.kext":         "10.13.6",
-                            "AMDShared.bundle":              "10.13.6",
-                            "AMDSupport.kext":               "10.13.6",
+                            "AMDFramebuffer.kext": "10.13.6",
+                            "AMDLegacyFramebuffer.kext": "10.13.6",
+                            "AMDLegacySupport.kext": "10.13.6",
+                            "AMDShared.bundle": "10.13.6",
+                            "AMDSupport.kext": "10.13.6",
                         },
                     },
                     "Remove": {
@@ -683,28 +673,29 @@ class SystemPatchDictionary():
                         ],
                     },
                 },
-
                 "AMD TeraScale 1": {
                     "Display Name": "Graphics: AMD TeraScale 1",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMD2400Controller.kext":        "10.13.6",
-                            "AMD2600Controller.kext":        "10.13.6",
-                            "AMD3800Controller.kext":        "10.13.6",
-                            "AMD4600Controller.kext":        "10.13.6",
-                            "AMD4800Controller.kext":        "10.13.6",
-                            "ATIRadeonX2000.kext":           "10.13.6" if self.os_major < os_data.os_data.ventura else "10.13.6 TS1",
-                            "ATIRadeonX2000GA.plugin":       "10.13.6",
+                            "AMD2400Controller.kext": "10.13.6",
+                            "AMD2600Controller.kext": "10.13.6",
+                            "AMD3800Controller.kext": "10.13.6",
+                            "AMD4600Controller.kext": "10.13.6",
+                            "AMD4800Controller.kext": "10.13.6",
+                            "ATIRadeonX2000.kext": "10.13.6"
+                            if self.os_major < os_data.os_data.ventura
+                            else "10.13.6 TS1",
+                            "ATIRadeonX2000GA.plugin": "10.13.6",
                             "ATIRadeonX2000GLDriver.bundle": "10.13.6",
                             "ATIRadeonX2000VADriver.bundle": "10.13.6",
                         },
@@ -728,20 +719,20 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMD5000Controller.kext":        "10.13.6",
-                            "AMD6000Controller.kext":        "10.13.6",
-                            "AMDRadeonVADriver.bundle":      "10.13.6",
-                            "AMDRadeonVADriver2.bundle":     "10.13.6",
-                            "AMDRadeonX3000.kext":           "10.13.6",
+                            "AMD5000Controller.kext": "10.13.6",
+                            "AMD6000Controller.kext": "10.13.6",
+                            "AMDRadeonVADriver.bundle": "10.13.6",
+                            "AMDRadeonVADriver2.bundle": "10.13.6",
+                            "AMDRadeonX3000.kext": "10.13.6",
                             "AMDRadeonX3000GLDriver.bundle": "10.13.6",
                         },
                     },
@@ -751,56 +742,54 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMD7000Controller.kext":        "12.5",
-                            "AMD8000Controller.kext":        "12.5",
-                            "AMD9000Controller.kext":        "12.5",
-                            "AMD9500Controller.kext":        "12.5",
-                            "AMD10000Controller.kext":       "12.5",
-                            "AMDRadeonX4000.kext":           "12.5",
+                            "AMD7000Controller.kext": "12.5",
+                            "AMD8000Controller.kext": "12.5",
+                            "AMD9000Controller.kext": "12.5",
+                            "AMD9500Controller.kext": "12.5",
+                            "AMD10000Controller.kext": "12.5",
+                            "AMDRadeonX4000.kext": "12.5",
                             "AMDRadeonX4000HWServices.kext": "12.5",
-                            "AMDFramebuffer.kext":           "12.5" if self.os_float < self.macOS_13_3 else "12.5-GCN",
-                            "AMDSupport.kext":               "12.5",
-
-                            "AMDRadeonVADriver.bundle":      "12.5",
-                            "AMDRadeonVADriver2.bundle":     "12.5",
+                            "AMDFramebuffer.kext": "12.5"
+                            if self.os_float < self.macOS_13_3
+                            else "12.5-GCN",
+                            "AMDSupport.kext": "12.5",
+                            "AMDRadeonVADriver.bundle": "12.5",
+                            "AMDRadeonVADriver2.bundle": "12.5",
                             "AMDRadeonX4000GLDriver.bundle": "12.5",
-                            "AMDMTLBronzeDriver.bundle":     "12.5",
-                            "AMDShared.bundle":              "12.5",
+                            "AMDMTLBronzeDriver.bundle": "12.5",
+                            "AMDShared.bundle": "12.5",
                         },
                     },
                 },
-                # Used only for AMD Polaris with host lacking AVX2.0
-                # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
                 "AMD Legacy Polaris": {
                     "Display Name": "Graphics: AMD Legacy Polaris",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX4000.kext":           "12.5",
+                            "AMDRadeonX4000.kext": "12.5",
                             "AMDRadeonX4000HWServices.kext": "12.5",
-
-                            "AMDRadeonVADriver2.bundle":     "12.5",
+                            "AMDRadeonVADriver2.bundle": "12.5",
                             "AMDRadeonX4000GLDriver.bundle": "12.5",
-                            "AMDMTLBronzeDriver.bundle":     "12.5",
-                            "AMDShared.bundle":              "12.5",
+                            "AMDMTLBronzeDriver.bundle": "12.5",
+                            "AMDShared.bundle": "12.5",
                         },
                     },
                 },
@@ -809,39 +798,34 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX5000.kext":            "12.5",
-
-                            "AMDRadeonVADriver2.bundle":      "12.5",
-                            "AMDRadeonX5000GLDriver.bundle":  "12.5",
+                            "AMDRadeonX5000.kext": "12.5",
+                            "AMDRadeonVADriver2.bundle": "12.5",
+                            "AMDRadeonX5000GLDriver.bundle": "12.5",
                             "AMDRadeonX5000MTLDriver.bundle": "12.5",
-                            "AMDRadeonX5000Shared.bundle":    "12.5",
-
-                            "AMDShared.bundle":               "12.5",
+                            "AMDRadeonX5000Shared.bundle": "12.5",
+                            "AMDShared.bundle": "12.5",
                         },
                     },
                 },
-                # Support mixed legacy and modern AMD GPUs
-                # Specifically systems using AMD GCN 1-3 and Vega (ex. MacPro6,1 with eGPU)
-                # Assume 'AMD Legacy GCN' patchset is installed alongside this
                 "AMD Legacy Vega Extended": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -855,18 +839,18 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelHDGraphics.kext":           "10.13.6",
-                            "AppleIntelHDGraphicsFB.kext":         "10.13.6",
-                            "AppleIntelHDGraphicsGA.plugin":       "10.13.6",
+                            "AppleIntelHDGraphics.kext": "10.13.6",
+                            "AppleIntelHDGraphicsFB.kext": "10.13.6",
+                            "AppleIntelHDGraphicsGA.plugin": "10.13.6",
                             "AppleIntelHDGraphicsGLDriver.bundle": "10.13.6",
                             "AppleIntelHDGraphicsVADriver.bundle": "10.13.6",
                         },
@@ -877,21 +861,21 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelHD3000Graphics.kext":           "10.13.6",
-                            "AppleIntelHD3000GraphicsGA.plugin":       "10.13.6",
+                            "AppleIntelHD3000Graphics.kext": "10.13.6",
+                            "AppleIntelHD3000GraphicsGA.plugin": "10.13.6",
                             "AppleIntelHD3000GraphicsGLDriver.bundle": "10.13.6",
                             "AppleIntelHD3000GraphicsVADriver.bundle": "10.13.6",
-                            "AppleIntelSNBGraphicsFB.kext":            "10.13.6",
-                            "AppleIntelSNBVA.bundle":                  "10.13.6",
+                            "AppleIntelSNBGraphicsFB.kext": "10.13.6",
+                            "AppleIntelSNBVA.bundle": "10.13.6",
                         },
                     },
                 },
@@ -900,22 +884,22 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
+                            "AppleIntelHD4000GraphicsGLDriver.bundle": "11.0 Beta 6",
                             "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6",
-                            "AppleIntelHD4000GraphicsVADriver.bundle":  "11.3 Beta 1",
-                            "AppleIntelFramebufferCapri.kext":          "11.4",
-                            "AppleIntelHD4000Graphics.kext":            "11.4",
-                            "AppleIntelIVBVA.bundle":                   "11.4",
-                            "AppleIntelGraphicsShared.bundle":          "11.4", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
+                            "AppleIntelHD4000GraphicsVADriver.bundle": "11.3 Beta 1",
+                            "AppleIntelFramebufferCapri.kext": "11.4",
+                            "AppleIntelHD4000Graphics.kext": "11.4",
+                            "AppleIntelIVBVA.bundle": "11.4",
+                            "AppleIntelGraphicsShared.bundle": "11.4",  # libIGIL-Metal.dylib pulled from 11.0 Beta 6
                         },
                     },
                 },
@@ -924,22 +908,22 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelFramebufferAzul.kext":           "12.5",
-                            "AppleIntelHD5000Graphics.kext":            "12.5",
-                            "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.5",
+                            "AppleIntelFramebufferAzul.kext": "12.5",
+                            "AppleIntelHD5000Graphics.kext": "12.5",
+                            "AppleIntelHD5000GraphicsGLDriver.bundle": "12.5",
                             "AppleIntelHD5000GraphicsMTLDriver.bundle": "12.5",
-                            "AppleIntelHD5000GraphicsVADriver.bundle":  "12.5",
-                            "AppleIntelHSWVA.bundle":                   "12.5",
-                            "AppleIntelGraphicsShared.bundle":          "12.5",
+                            "AppleIntelHD5000GraphicsVADriver.bundle": "12.5",
+                            "AppleIntelHSWVA.bundle": "12.5",
+                            "AppleIntelGraphicsShared.bundle": "12.5",
                         },
                     },
                 },
@@ -948,22 +932,22 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelBDWGraphics.kext":            "12.5",
+                            "AppleIntelBDWGraphics.kext": "12.5",
                             "AppleIntelBDWGraphicsFramebuffer.kext": "12.5",
-                            "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
+                            "AppleIntelBDWGraphicsGLDriver.bundle": "12.5",
                             "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5",
-                            "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
-                            "AppleIntelBDWGraphicsVAME.bundle":      "12.5",
-                            "AppleIntelGraphicsShared.bundle":       "12.5",
+                            "AppleIntelBDWGraphicsVADriver.bundle": "12.5",
+                            "AppleIntelBDWGraphicsVAME.bundle": "12.5",
+                            "AppleIntelGraphicsShared.bundle": "12.5",
                         },
                     },
                 },
@@ -972,22 +956,22 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelSKLGraphics.kext":            "12.5",
+                            "AppleIntelSKLGraphics.kext": "12.5",
                             "AppleIntelSKLGraphicsFramebuffer.kext": "12.5",
-                            "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
+                            "AppleIntelSKLGraphicsGLDriver.bundle": "12.5",
                             "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5",
-                            "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
-                            "AppleIntelSKLGraphicsVAME.bundle":      "12.5",
-                            "AppleIntelGraphicsShared.bundle":       "12.5",
+                            "AppleIntelSKLGraphicsVADriver.bundle": "12.5",
+                            "AppleIntelSKLGraphicsVAME.bundle": "12.5",
+                            "AppleIntelGraphicsShared.bundle": "12.5",
                         },
                     },
                 },
@@ -998,17 +982,17 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.sierra,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     # For iMac7,1 and iMac8,1 units with legacy Realtek HD Audio
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleHDA.kext":      "10.11.6",
+                            "AppleHDA.kext": "10.11.6",
                             "IOAudioFamily.kext": "10.11.6",
                         },
                     },
@@ -1028,11 +1012,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.mojave,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -1048,11 +1032,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.monterey,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -1064,10 +1048,16 @@ class SystemPatchDictionary():
                         },
                     },
                     "Install Non-Root": {
-                        "/Library/Application Support/SkyLightPlugins": {
-                            **({ "CoreWLAN.dylib": "SkyLightPlugins" } if self.os_major == os_data.os_data.monterey else {}),
-                            **({ "CoreWLAN.txt": "SkyLightPlugins" } if self.os_major == os_data.os_data.monterey else {}),
-                        },
+                        "/Library/Application Support/SkyLightPlugins": (
+                            {"CoreWLAN.dylib": "SkyLightPlugins"}
+                            if self.os_major == os_data.os_data.monterey
+                            else {}
+                        )
+                        | (
+                            {"CoreWLAN.txt": "SkyLightPlugins"}
+                            if self.os_major == os_data.os_data.monterey
+                            else {}
+                        )
                     },
                 },
                 "Legacy Wireless Extended": {
@@ -1075,11 +1065,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -1091,10 +1081,10 @@ class SystemPatchDictionary():
                         },
                         "/System/Library/PrivateFrameworks": {
                             "CoreWiFi.framework": "12.6.2",
-                            "IO80211.framework":  "12.6.2",
+                            "IO80211.framework": "12.6.2",
                         },
                     },
-                }
+                },
             },
             "Brightness": {
                 "Legacy Backlight Control": {
@@ -1102,16 +1092,16 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.high_sierra,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleBacklight.kext":       "10.12.6",
+                            "AppleBacklight.kext": "10.12.6",
                             "AppleBacklightExpert.kext": "10.12.6",
                         },
                         "/System/Library/PrivateFrameworks": {
@@ -1131,11 +1121,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.high_sierra,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -1158,11 +1148,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": self.non_metal_os_support[0],
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": self.non_metal_os_support[-1],
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Processes": {
@@ -1174,11 +1164,11 @@ class SystemPatchDictionary():
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
+                            "OS Minor": 0,
                         },
                         "Maximum OS Support": {
                             "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
+                            "OS Minor": 99,
                         },
                     },
                     "Install": {
@@ -1186,6 +1176,6 @@ class SystemPatchDictionary():
                             "IOUSBHostFamily.kext": "12.6.2",
                         },
                     },
-                }
+                },
             },
         }

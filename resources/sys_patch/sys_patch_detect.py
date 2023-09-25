@@ -108,10 +108,10 @@ class DetectRootPatch:
                         ):
                             self.kepler_gpu = True
                             self.supports_metal = True
-                            if self.constants.detected_os >= os_data.os_data.ventura:
-                                self.amfi_must_disable = True
-                                if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
-                                    self.amfi_shim_bins = True
+                        if self.constants.detected_os >= os_data.os_data.ventura:
+                            self.amfi_must_disable = True
+                            if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                                self.amfi_shim_bins = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -156,12 +156,12 @@ class DetectRootPatch:
                             # full compatibility (namely power states, etc)
                             # Reference: https://github.com/dortania/bugtracker/issues/292
                             # TODO: Probe framebuffer families further
-                            if self.model != "MacBookPro13,3":
-                                if "AVX2" in self.constants.computer.cpu.leafs:
-                                    continue
-                                self.legacy_polaris = True
-                            else:
+                            if self.model == "MacBookPro13,3":
                                 self.legacy_gcn = True
+                            elif "AVX2" in self.constants.computer.cpu.leafs:
+                                continue
+                            else:
+                                self.legacy_polaris = True
                         else:
                             self.legacy_gcn = True
                         self.supports_metal = True
@@ -239,9 +239,8 @@ class DetectRootPatch:
         if self.constants.detected_os <= os_data.os_data.monterey:
             # Always assume Root KC requirement on Monterey and older
             self.requires_root_kc = True
-        else:
-            if self.requires_root_kc is True:
-                self.missing_kdk = not self._check_kdk()
+        elif self.requires_root_kc is True:
+            self.missing_kdk = not self._check_kdk()
 
         self._check_networking_support()
 
