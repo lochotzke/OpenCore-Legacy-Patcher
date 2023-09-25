@@ -336,7 +336,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "kext_debug",
                     "description": [
                         "Use DEBUG variants of kexts and",
-                        "enables additional kernel logging.",
+                        "enable additional kernel logging.",
                     ],
                 },
                 "wrap_around 1": {
@@ -348,7 +348,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "opencore_debug",
                     "description": [
                         "Use DEBUG variant of OpenCore",
-                        "and enables additional logging.",
+                        "and enable additional logging.",
                     ],
                 },
             },
